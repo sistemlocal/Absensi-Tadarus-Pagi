@@ -157,14 +157,16 @@ app.post('/api/admin/login', (req, res) => {
 
 // Start Server
 async function startServer() {
-  if (process.env.NODE_ENV !== "production") {
+  const distPath = path.join(process.cwd(), 'dist');
+  const isProduction = process.env.NODE_ENV === 'production' || fs.existsSync(path.join(distPath, 'index.html'));
+
+  if (!isProduction) {
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
     });
     app.use(vite.middlewares);
   } else {
-    const distPath = path.join(process.cwd(), 'dist');
     app.use(express.static(distPath));
     app.get('*', (req, res) => {
       res.sendFile(path.join(distPath, 'index.html'));
@@ -172,7 +174,7 @@ async function startServer() {
   }
 
   httpServer.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on port ${PORT}`);
   });
 }
 
