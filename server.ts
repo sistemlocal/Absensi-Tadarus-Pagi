@@ -158,6 +158,7 @@ app.post('/api/admin/login', (req, res) => {
 // Start Server
 async function startServer() {
   const distPath = path.join(process.cwd(), 'dist');
+  // Deteksi otomatis jika build production (folder dist/index.html) sudah tersedia
   const isProduction = process.env.NODE_ENV === 'production' || fs.existsSync(path.join(distPath, 'index.html'));
 
   if (!isProduction) {
